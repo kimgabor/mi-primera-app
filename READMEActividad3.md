@@ -27,6 +27,53 @@ Todas las vistas heredan de la plantilla base `resources/views/layouts/app.blade
   GET|HEAD  posts/create .................................................................... posts.create › PostsController@create
 ```
 
+### Código del formulario (`resources/views/posts/create.blade.php`)
+
+```html
+@extends('layouts.app')
+
+@section('content')
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h3 class="mb-0">Crear un nuevo Post</h3>
+                </div>
+                <div class="card-body">
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <ul class="mb-0">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    <form method="POST" action="{{ route('posts.store') }}">
+                        @csrf
+
+                        <div class="mb-3">
+                            <label for="title" class="form-label fw-bold">Título (mínimo 5 caracteres):</label>
+                            <input type="text" id="title" name="title" class="form-control" value="{{ old('title') }}" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="body" class="form-label fw-bold">Contenido (mínimo 10 caracteres):</label>
+                            <textarea id="body" name="body" rows="5" class="form-control" required>{{ old('body') }}</textarea>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">Publicar Post</button>
+                            <a href="{{ route('posts.index') }}" class="btn btn-outline-secondary">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
+```
 
 ### Evidencia y recorrido
 
@@ -46,7 +93,53 @@ Todas las vistas heredan de la plantilla base `resources/views/layouts/app.blade
   GET|HEAD  categorias/{id} ............................................................ categorias.show › CategoriaController@show
 ```
 
+### Código del formulario (`resources/views/categorias/create.blade.php`)
 
+```html
+@extends('layouts.app')
+
+@section('content')
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h3 class="mb-0">Crear una nueva Categoría</h3>
+                </div>
+                <div class="card-body">
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <ul class="mb-0">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    <form method="POST" action="{{ route('categorias.store') }}">
+                        @csrf
+
+                        <div class="mb-3">
+                            <label for="nombre" class="form-label fw-bold">Nombre:</label>
+                            <input type="text" id="nombre" name="nombre" class="form-control" value="{{ old('nombre') }}" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="descripcion" class="form-label fw-bold">Descripción:</label>
+                            <textarea id="descripcion" name="descripcion" rows="3" class="form-control" required>{{ old('descripcion') }}</textarea>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">Guardar Categoría</button>
+                            <a href="{{ route('categorias.index') }}" class="btn btn-outline-secondary">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
+```
 
 ### Evidencia y recorrido
 
@@ -63,6 +156,124 @@ Todas las vistas heredan de la plantilla base `resources/views/layouts/app.blade
   GET|HEAD  etiquetas .................................................................. etiquetas.index › EtiquetaController@index
   POST      etiquetas .................................................................. etiquetas.store › EtiquetaController@store
   GET|HEAD  etiquetas/create ......................................................... etiquetas.create › EtiquetaController@create
+```
+
+### Código del formulario (`resources/views/etiquetas/create.blade.php`)
+
+```html
+@extends('layouts.app')
+
+@section('content')
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h3 class="mb-0">Crear una nueva Etiqueta</h3>
+                </div>
+                <div class="card-body">
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <ul class="mb-0">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    <form method="POST" action="{{ route('etiquetas.store') }}">
+                        @csrf
+
+                        <div class="mb-3">
+                            <label for="nombre" class="form-label fw-bold">Nombre de la etiqueta:</label>
+                            <input type="text" id="nombre" name="nombre" class="form-control" value="{{ old('nombre') }}" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="color" class="form-label fw-bold">Color identificador:</label>
+                            <input type="color" id="color" name="color" class="form-control form-control-color" value="{{ old('color', '#0d6efd') }}" required>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">Guardar Etiqueta</button>
+                            <a href="{{ route('etiquetas.index') }}" class="btn btn-outline-secondary">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
+```
+
+### Evidencia y recorrido
+
+* **Conteo verificado en Tinker (`App\Models\Etiqueta::count()`):** `5` registros en la base de datos.
+* **Recorrido:** Se reemplazó la antigua respuesta JSON de `/etiquetas` por una página Blade completa (`etiquetas.index`) enlazada al formulario `etiquetas.create`. Al enviar el nombre y color por **POST** con `@csrf` hacia `etiquetas.store`, `EtiquetaController@store` valida la longitud mínima y formato de los datos e inserta el registro en SQLite. Tras guardar, redirige a `etiquetas.index` mostrando la nueva etiqueta con su insignia de color y la alerta de confirmación.
+
+---
+
+## 4. Sección Contacto
+
+### Salida de `route:list` correspondiente
+
+```text
+  GET|HEAD  contacto .................................................................... contacto.index › ContactoController@index
+  POST      contacto .................................................................... contacto.store › ContactoController@store
+  GET|HEAD  contacto/create ........................................................... contacto.create › ContactoController@create
+```
+
+### Código del formulario (`resources/views/contacto/create.blade.php`)
+
+```html
+@extends('layouts.app')
+
+@section('content')
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h3 class="mb-0">Enviar Mensaje de Contacto</h3>
+                </div>
+                <div class="card-body">
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <ul class="mb-0">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    <form method="POST" action="{{ route('contacto.store') }}">
+                        @csrf
+
+                        <div class="mb-3">
+                            <label for="nombre" class="form-label fw-bold">Nombre completo:</label>
+                            <input type="text" id="nombre" name="nombre" class="form-control" value="{{ old('nombre') }}" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label fw-bold">Correo electrónico:</label>
+                            <input type="email" id="email" name="email" class="form-control" value="{{ old('email') }}" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="mensaje" class="form-label fw-bold">Mensaje:</label>
+                            <textarea id="mensaje" name="mensaje" rows="4" class="form-control" required>{{ old('mensaje') }}</textarea>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">Enviar Mensaje</button>
+                            <a href="{{ route('contacto.index') }}" class="btn btn-outline-secondary">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
 ```
 
 ### Evidencia y recorrido
